@@ -1,0 +1,10 @@
+# dsh-auto-open-files bundle patch：在 profile 里插入本插件一条挂载行。
+#
+# 一个包两半：node 半（exports "."）是空壳；浏览器半（exports "./client"，
+# 由 dsh.client.platform = "web" 声明）负责在会话上屏后自动打开右栏「文件」页签。
+#
+# 想关掉：从 profile 的 package.json 里 dsh.profile.bundles 删掉 dsh-auto-open-files
+# （或删掉 profile cordis.patch.yml 里对应的挂载行），刷新页面即不再加载。
+- insert:
+    - id: auto-open-files
+      name: dsh-auto-open-files

@@ -1,0 +1,10 @@
+# 依赖与运行产物不入库
+node_modules/
+logs/
+*.log
+
+# 本地备份与临时文件
+*.bak-*
+*.tmp
+.DS_Store
+Thumbs.db
