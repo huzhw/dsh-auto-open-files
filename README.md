@@ -7,6 +7,18 @@
 - 新会话一上屏，如果它的右栏一个页签都没有，就自动打开「文件」页签（原生 `openTab` 会同时展开右栏）。
 - 每个会话只自动打开一次：手动关光页签后再切回来，不会被重新打开。
 - 已经有页签（比如首次展开时种子化的 guide 页）的会话不动。
+- 右栏宽度固定 **520px**（原生首开是「视口宽 × 45%」，宽屏上会撑到 1000px 以上），见下节。
+
+## 右栏宽度
+
+原生右栏首次展开按「视口宽 × 45%」算（上限 视口 × 70%，下限 300px），界面没有设置项，
+拖动出来的宽度也只存在内存里、重启回到默认。本插件在激活时把布局 store 的右栏偏好
+（`ctx.layout.panels.setRightbar`）写成 `RIGHTBAR_WIDTH`，只写这一次：
+
+- 想改宽度：改 `lib/client.js` 里的 `const RIGHTBAR_WIDTH = 520;`，刷新页面生效；
+- 用户手动拖动仍然优先——拖动只改当次会话内存值，插件不会把手再拉回来；
+- 上游若改名 `layout.panels`，控制台会打一条 `layout.panels.setRightbar 不可用` 的警告，
+  宽度回落到原生 45%，自动打开页签不受影响。
 
 ## 目录结构
 
@@ -15,7 +27,7 @@
 | `package.json` | 插件清单：`main`、`exports "./client"`、`dsh.bundle.patch`、`dsh.client.platform` |
 | `cordis.patch.yml` | bundle 补丁：往 profile 里插入一条挂载行 |
 | `lib/index.js` | host 半（空壳，无路由无服务） |
-| `lib/client.js` | 浏览器半：订阅 `ctx.sidebarRight.mounted`，空栏时 `openTab('files')` |
+| `lib/client.js` | 浏览器半：订阅 `ctx.sidebarRight.mounted`，空栏时 `openTab('files')`；并把右栏宽度固定成 520px |
 
 浏览器半是手写的 `window.__ModuleLoader__.load({ id, factory })` 形式，不需要 tsc/tsdown 构建。
 
@@ -62,4 +74,4 @@ node "%USERPROFILE%\.dsh\profiles\web\node_modules\dsh-ops\bin\dsh-ops.mjs" prov
 - `放弃自动打开右栏页签`：补试用完（约 3 秒）仍未成功，通常是页签类型 `files` 没注册；
 - `sidebarRight 服务不可用`：右栏被别的插件替换/禁用了。
 
-最后修改：2026-10-30
+最后修改：2026-11-01
